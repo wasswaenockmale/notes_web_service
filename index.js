@@ -7,6 +7,11 @@ const app = express();
 // To access data easily, we need help of an express JSON.parser
 app.use(express.json());
 
+// We want to express show static content. We shall build a middleware for it.
+// The static file is generated from the frontend of the notes application.
+// We want express to show it.
+app.use(express.static('build'));
+
 const generateId = () => {
   const maxId = notes.length > 0 ? Math.max(...notes.map(n=>n.id)): 0
   return maxId + 1;
