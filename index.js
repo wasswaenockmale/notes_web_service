@@ -2,13 +2,33 @@
 
 //username:wasswaenockmale
 //password: emotionally100
+
+const password = 'emotionally100';
 const express = require('express');
+const mongoose = require('mongoose');
 // const baseUrl = 'https://your-notes-app.onrender.com'
 
-const app = express();
+const url = `mongodb+srv://wasswaenockmale:${password}@cluster0.7plltgb.mongodb.net/noteApp?retryWrites=true&w=majority`;
 
+mongoose.set('strictQuery', false);
+mongoose.connect(url);
+
+// create the schema
+const noteSchema = new mongoose.Schema({
+  content:String,
+  important: Boolean,
+});
+
+// Create the model
+const Note = mongoose.model('Note', noteSchema);
+
+
+
+
+const app = express();
 // To access data easily, we need help of an express JSON.parser
 app.use(express.json());
+
 
 // We want to express show static content. We shall build a middleware for it.
 // The static file is generated from the frontend of the notes application.
@@ -51,7 +71,9 @@ app.get('/',(request, response) => {
 });
 
 app.get('/api/notes', (request, response) => {
-    response.send(notes);
+    Note.find({}).then(res => {
+      response.json(res);
+    })
 });
 
 app.get('/api/notes/:id', (request, response)=>{
