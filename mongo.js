@@ -25,7 +25,7 @@ const Note = mongoose.model('Note', noteSchema);
 //     important: true,
 // });
 
-Note.find({important: true}).then(res => {
+Note.find({}).then(res => {
     res.forEach(note => {
         console.log(note);
     });
