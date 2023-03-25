@@ -12,11 +12,14 @@ app.use(express.json());
 // We want express to show it.
 app.use(express.static('build'));
 
+
+// This is a method that generates a random number that helps in geting the ID of the node.
 const generateId = () => {
   const maxId = notes.length > 0 ? Math.max(...notes.map(n=>n.id)): 0
   return maxId + 1;
 }
 
+// These are the notes that we display.
 let notes = [
     {
         id: 1,
