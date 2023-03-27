@@ -1,5 +1,3 @@
-// const http = require("http");
-
 //username:wasswaenockmale
 //password: emotionally100
 
@@ -10,8 +8,6 @@ const mongoose = require('mongoose');
 
 const url = `mongodb+srv://wasswaenockmale:${password}@cluster0.7plltgb.mongodb.net/noteApp?retryWrites=true&w=majority`;
 
-mongoose.set('strictQuery', false);
-mongoose.connect(url);
 
 // create the schema
 const noteSchema = new mongoose.Schema({
@@ -19,11 +15,29 @@ const noteSchema = new mongoose.Schema({
   important: Boolean,
 });
 
-// Create the model
-const Note = mongoose.model('Note', noteSchema);
+// modifying the noteSchema
+noteSchema.set('toJSON',{
+  transform: (document, returnedObject) => {
+    returnedObject.id = returnedObject._id.toString()
+    delete returnedObject._id;
+    delete returnedObject.__v;
+  }
+});
 
 
+  mongoose.set('strictQuery', false);
+  
+  mongoose.connect(url).then(()=>{
+    console.log("Connected");
+  }).catch(er => console.log(er));
 
+  const Note = mongoose.model('Note', noteSchema);
+
+  // Note.find({}).then(response => {
+  //   console.log(response);
+
+  //   mongoose.connection.close();
+  // })
 
 const app = express();
 // To access data easily, we need help of an express JSON.parser
@@ -71,8 +85,10 @@ app.get('/',(request, response) => {
 });
 
 app.get('/api/notes', (request, response) => {
-    Note.find({}).then(res => {
-      response.json(res);
+    Note.find({}).then(notes => {
+      response.json(notes);
+
+      mongoose.connection.close();
     })
 });
 
@@ -82,6 +98,7 @@ app.get('/api/notes/:id', (request, response)=>{
     // console.log(elem.id, typeof elem.id, id, typeof id, elem.id === id)
     return elem.id === id
   });
+  
   if(note){
     console.log(note);
     response.send(note);
