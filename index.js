@@ -1,45 +1,14 @@
-//username:wasswaenockmale
-//password: emotionally100
-
-const password = 'emotionally100';
 const express = require('express');
 const mongoose = require('mongoose');
+require('dotenv').config();
+
 // const baseUrl = 'https://your-notes-app.onrender.com'
 
-const url = `mongodb+srv://wasswaenockmale:${password}@cluster0.7plltgb.mongodb.net/noteApp?retryWrites=true&w=majority`;
-
-
-// create the schema
-const noteSchema = new mongoose.Schema({
-  content:String,
-  important: Boolean,
-});
-
-// modifying the noteSchema
-noteSchema.set('toJSON',{
-  transform: (document, returnedObject) => {
-    returnedObject.id = returnedObject._id.toString()
-    delete returnedObject._id;
-    delete returnedObject.__v;
-  }
-});
-
-
-  mongoose.set('strictQuery', false);
-  
-  mongoose.connect(url).then(()=>{
-    console.log("Connected");
-  }).catch(er => console.log(er));
-
-  const Note = mongoose.model('Note', noteSchema);
-
-  // Note.find({}).then(response => {
-  //   console.log(response);
-
-  //   mongoose.connection.close();
-  // })
 
 const app = express();
+
+const Note = require('./models/note');
+
 // To access data easily, we need help of an express JSON.parser
 app.use(express.json());
 
