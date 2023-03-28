@@ -62,19 +62,23 @@ app.get('/api/notes', (request, response) => {
 });
 
 app.get('/api/notes/:id', (request, response)=>{
-  const id = Number(request.params.id);
-  const note = notes.find(elem =>{
-    // console.log(elem.id, typeof elem.id, id, typeof id, elem.id === id)
-    return elem.id === id
-  });
+
+  Note.findById(request.params.id).then(note => {
+    response.json(note)
+  })
+  // const id = Number(request.params.id);
+  // const note = notes.find(elem =>{
+  //   // console.log(elem.id, typeof elem.id, id, typeof id, elem.id === id)
+  //   return elem.id === id
+  // });
   
-  if(note){
-    console.log(note);
-    response.send(note);
-  }else{
-    console.log(note);
-    response.status(404).end();
-  }
+  // if(note){
+  //   console.log(note);
+  //   response.send(note);
+  // }else{
+  //   console.log(note);
+  //   response.status(404).end();
+  // }
   // response.send(note);
 });
 
@@ -98,15 +102,20 @@ app.post('/api/notes', (request, response)=>{
     });
   }
 
-  const note = {
+  // const note = {
+  //   content: body.content,
+  //   important: body.important || false,
+  //   id:generateId()
+  // }
+  const note = new Note({
     content: body.content,
     important: body.important || false,
-    id:generateId()
-  }
+  })
 
-  notes.concat(note);
-
-  response.json(note)
+  // notes.concat(note);
+  note.save().then(savedNote => {
+    response.json(savedNote);
+  });
 });
 
 
